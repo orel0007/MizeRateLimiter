@@ -1,5 +1,5 @@
 # MizeRateLimiter-
-RateLimiter
+owner: Orel Aviad
 ##
 I needed a way to control how many times an action can be performed in a given time window. This rate limiter helps manage API requests, prevent overload, and ensure smooth execution.
 ###
