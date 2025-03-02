@@ -1,19 +1,28 @@
-# 📌 MizeRateLimiter
+# MizeRateLimiter
+
+## Project Overview
 **Owner:** Orel Aviad  
-**Project Goal:** A rate limiter to control how many times an action can be performed in a given time window.  
-This helps manage API requests, prevent overload, and ensure smooth execution.
+**Description:**  
+MizeRateLimiter is a rate-limiting solution designed to control how often an action can be performed within a fixed time window. This ensures API stability, prevents overload, and optimizes performance.
 
 ---
 
-## **💡 Key Decisions & Why**
-### **1️⃣ Using `SemaphoreSlim` Instead of `lock` or `Mutex`**
-- `lock` **does not support `async/await`**.
-- `Mutex` **is slow** and meant for cross-process locks, which I don't need.
-- ✅ **Final Choice:** `SemaphoreSlim(1,1)`, as it allows **async operations** and ensures only one execution at a time.
+## Key Decisions & Justifications
 
----
+### 1. **Using an Absolute Window for Rate Limiting**
+- An absolute window enforces strict request limits per defined time intervals (e.g., 100 requests per hour, resetting every full hour).
+- This ensures predictable behavior and aligns with many API rate-limiting standards.
 
-### **2️⃣ Running All Rate Limits in Parallel for Better Performance**
+### 2. **Using `SemaphoreSlim` Instead of `lock` or `Mutex`**
+- `lock` does not support `async/await`, making it unsuitable for asynchronous operations.
+- `Mutex` is slower and introduces unnecessary overhead.
+- `SemaphoreSlim` is optimized for async scenarios and provides better concurrency control.
+
+### 3. **Running Rate Limits in Parallel**
+- Improves performance by reducing execution time.
+- Uses `Task.WhenAll()` to process multiple rate limit checks simultaneously.
+
 ```csharp
 var limitTasks = rateLimits.Select(rl => rl.EnsureLimitAsync());
 await Task.WhenAll(limitTasks);
+
