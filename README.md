@@ -1,8 +1,7 @@
 # MizeRateLimiter-
 owner: Orel Aviad
-##
-I needed a way to control how many times an action can be performed in a given time window. This rate limiter helps manage API requests, prevent overload, and ensure smooth execution.
-###
+project way to control how many times an action can be performed in a given time window. This rate limiter helps manage API requests, prevent overload, and ensure smooth execution.
+##-
 Using SemaphoreSlim Instead of lock or Mutex
 lock does not support async/await, and muter is slow.
 ###
