@@ -18,7 +18,7 @@ A sliding window approach ensures a more even distribution of requests over time
 
 - ## Usage Example
 
-Here’s how to use the MizeRateLimiter:
+Here’s example how to use the MizeRateLimiter:
 
 ```csharp
 class Program
