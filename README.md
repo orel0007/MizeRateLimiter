@@ -9,20 +9,11 @@ MizeRateLimiter is a rate-limiting solution designed to control how often an act
 
 ## Key Decisions & Justifications
 
-### 1. **Using an Absolute Window for Rate Limiting**
-- An absolute window enforces strict request limits per defined time intervals (e.g., 100 requests per hour, resetting every full hour).
-- This ensures predictable behavior and aligns with many API rate-limiting standards.
+### 1. **Sliding Window Implementation**
+A sliding window approach ensures a more even distribution of requests over time, preventing bursts that could overwhelm the system.
+- exception: if Api have permanent limits per time(day,month) so i had choose absulte window.
 
 ### 2. **Using `SemaphoreSlim` Instead of `lock` or `Mutex`**
-- `lock` does not support `async/await`, making it unsuitable for asynchronous operations.
-- `Mutex` is slower and introduces unnecessary overhead.
-- `SemaphoreSlim` is optimized for async scenarios and provides better concurrency control.
+- `lock` does not support `async/await`, mutex is too low
 
-### 3. **Running Rate Limits in Parallel**
-- Improves performance by reducing execution time.
-- Uses `Task.WhenAll()` to process multiple rate limit checks simultaneously.
-
-```csharp
-var limitTasks = rateLimits.Select(rl => rl.EnsureLimitAsync());
-await Task.WhenAll(limitTasks);
 
