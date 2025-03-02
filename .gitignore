@@ -1,0 +1,18 @@
+# Ignore Visual Studio specific files
+.vs/
+*.suo
+*.user
+*.cache
+*.sln.docstates
+
+# Ignore build directories
+bin/
+obj/
+TestResults/
+publish/
+Generated_Code/
+
+# Ignore user-specific files
+*.userosscache
+*.sln.ide
+*.pdb
