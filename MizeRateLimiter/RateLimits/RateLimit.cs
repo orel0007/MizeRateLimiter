@@ -26,34 +26,20 @@ namespace MizeRateLimiter.RateLimits
             await semaphore.WaitAsync();
             try
             {
-                while (true)
+                DateTime now = DateTime.UtcNow;
+                DateTime windowStart = now - Interval;
+
+                while (requests.TryPeek(out DateTime oldest) && oldest < windowStart)
                 {
-                    DateTime now = DateTime.UtcNow;
-                    DateTime windowStart = now - Interval;
-
-                    while (requests.TryPeek(out DateTime oldest) && oldest < windowStart)
-                    {
-                        requests.TryDequeue(out _);
-                    }
-
-                    if (requests.Count < Limit)
-                    {
-                        requests.Enqueue(now);
-                        return;
-                    }
-
-                    if (requests.TryPeek(out DateTime nextAvailable))
-                    {
-                        nextAvailable = nextAvailable.Add(Interval);
-                    }
-                    else
-                    {
-                        nextAvailable = DateTime.UtcNow;
-                    }
-
-                    TimeSpan waitTime = nextAvailable - now;
-                    await Task.Delay(waitTime);
+                    requests.TryDequeue(out _);
                 }
+
+                if (requests.Count < Limit)
+                {
+                    requests.Enqueue(now);
+                    return;
+                }
+                await Task.Delay(Interval / Limit);
             }
             finally
             {
